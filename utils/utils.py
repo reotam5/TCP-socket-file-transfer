@@ -1,4 +1,5 @@
 import argparse
+from os.path import isdir
 import socket
 import sys
 import ipaddress
@@ -43,13 +44,14 @@ def validatePort(value):
 
 
 def validateFilePath(value):
-    try:
-        file_path = str(value)
-        if os.path.isfile(file_path):
-            return file_path
-        else:
-            raise
-    except:
+    file_path = str(value)
+    if os.path.isfile(file_path):
+        return file_path
+    elif os.path.isdir(file_path):
+        raise argparse.ArgumentTypeError(
+            "The path is a directory. Got '{value}'".format(value=value)
+        )
+    else:
         raise argparse.ArgumentTypeError(
             "File does not exist. Got '{value}'".format(value=value)
         )
