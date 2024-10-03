@@ -28,7 +28,7 @@ class Server:
             self.port,
         )
         self.socket.bind(address)
-        print("Binded to port {port}".format(port=self.port))
+        print("Bound to port {port}".format(port=self.port))
 
     @error_handler("Unnable to listen to socket.")
     def __listen_socket(self):
