@@ -61,6 +61,7 @@ class Server:
                 lower=lower, upper=upper, total=upper + lower
             )
         except Exception as e:
+            print('There was an error while processing the recieved data.')
             return "There was an error while processing the data.\n" + str(e)
 
     def start(self):
