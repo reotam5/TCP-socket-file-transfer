@@ -62,8 +62,7 @@ class Server:
             )
         except:
             print("There was an error while processing the data")
-            return "There was an error while processing the file.\n \
-                Please check if the file is decodable using utf-8.\n"
+            return "There was an error while processing the file.\nPlease check if the file is decodable using utf-8.\n"
 
     def start(self):
         self.__create_socket()
