@@ -21,7 +21,7 @@ def validateIp(value):
             return str(value)
     except:
         raise argparse.ArgumentTypeError(
-            "IP address has to be in a valid IPv4 format. Got {value}".format(
+            "IP address has to be in a valid IPv4 format. 'Got {value}'".format(
                 value=value
             )
         )
@@ -36,7 +36,7 @@ def validatePort(value):
             raise
     except:
         raise argparse.ArgumentTypeError(
-            "Port number has to be an integer between 1 and 65535. Got {value}".format(
+            "Port number has to be an integer between 1 and 65535. Got '{value}'".format(
                 value=value
             )
         )
@@ -51,7 +51,7 @@ def validateFilePath(value):
             raise
     except:
         raise argparse.ArgumentTypeError(
-            "File does not exist. Got {value}".format(value=value)
+            "File does not exist. Got '{value}'".format(value=value)
         )
 
 
