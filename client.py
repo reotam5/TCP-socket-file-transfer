@@ -5,12 +5,12 @@ from utils.utils import (
     DATA_ENCODING,
     SOCKET_ADDRESS_FAMILY,
     SOCKET_KIND,
-    ValidateFilePath,
-    ValidateIP,
-    ValidatePort,
     error_handler,
     receive_data,
     send_file,
+    validateFilePath,
+    validateIp,
+    validatePort,
 )
 
 
@@ -65,19 +65,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--host",
         required=True,
-        action=ValidateIP,
+        type=validateIp,
         help="The server ip address.",
     )
     parser.add_argument(
         "--port",
         required=True,
-        action=ValidatePort,
+        type=validatePort,
         help="The port number in which server is hosting the server application on.",
     )
     parser.add_argument(
         "--file",
         required=True,
-        action=ValidateFilePath,
+        type=validateFilePath,
         help="A path to a file to be sent over to the server for analysis.",
     )
 

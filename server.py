@@ -4,10 +4,10 @@ from utils.utils import (
     DATA_ENCODING,
     SOCKET_ADDRESS_FAMILY,
     SOCKET_KIND,
-    ValidatePort,
     error_handler,
     receive_data,
     send_message,
+    validatePort,
 )
 import ipaddress
 
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--port",
         required=True,
-        action=ValidatePort,
+        type=validatePort,
         help="A port number to bind socket to.",
     )
 

@@ -12,48 +12,47 @@ HEADER_BYTE_ORDER = "big"  # determines how header is formatted. "big" or "littl
 DATA_ENCODING = "utf-8"  # determines the data encoding format.
 
 
-class ValidateIP(argparse.Action):
-    def __call__(self, parser, namespace, values, _=None):
-        try:
-            ip = ipaddress.ip_address(str(values))
-            if ip.version != 4:
-                raise
-            else:
-                setattr(namespace, self.dest, values)
-        except:
-            parser.error(
-                "IP address has to be in a valid IP4 format. Got {value}".format(
-                    value=values
-                )
+def validateIp(value):
+    try:
+        ip = ipaddress.ip_address(str(value))
+        if ip.version != 4:
+            raise
+        else:
+            return str(value)
+    except:
+        raise argparse.ArgumentTypeError(
+            "IP address has to be in a valid IPv4 format. Got {value}".format(
+                value=value
             )
+        )
 
 
-class ValidatePort(argparse.Action):
-    def __call__(self, parser, namespace, values, _=None):
-        try:
-            port = int(values)
-            if port >= 1 and port <= 65535:
-                setattr(namespace, self.dest, port)
-            else:
-                raise
-        except:
-            parser.error(
-                "Port number has to be an integer between 1 and 65535. Got {value}".format(
-                    value=values
-                )
+def validatePort(value):
+    try:
+        port = int(value)
+        if port >= 1 and port <= 65535:
+            return port
+        else:
+            raise
+    except:
+        raise argparse.ArgumentTypeError(
+            "Port number has to be an integer between 1 and 65535. Got {value}".format(
+                value=value
             )
+        )
 
 
-class ValidateFilePath(argparse.Action):
-    def __call__(self, parser, namespace, values, _=None):
-        try:
-            file_path = str(values)
-            if os.path.isfile(file_path):
-                setattr(namespace, self.dest, file_path)
-            else:
-                raise
-        except:
-            parser.error("File does not exist. Got {value}".format(value=values))
+def validateFilePath(value):
+    try:
+        file_path = str(value)
+        if os.path.isfile(file_path):
+            return file_path
+        else:
+            raise
+    except:
+        raise argparse.ArgumentTypeError(
+            "File does not exist. Got {value}".format(value=value)
+        )
 
 
 def receive_data_in_chunks(connection, bytes_to_receive):
