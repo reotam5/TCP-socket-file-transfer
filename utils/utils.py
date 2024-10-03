@@ -21,7 +21,7 @@ def validateIp(value):
             return str(value)
     except:
         raise argparse.ArgumentTypeError(
-            "IP address has to be in a valid IPv4 format. 'Got {value}'".format(
+            "IP address has to be in a valid IPv4 format. Got '{value}'".format(
                 value=value
             )
         )
