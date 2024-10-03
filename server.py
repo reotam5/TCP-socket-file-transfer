@@ -60,9 +60,10 @@ class Server:
             return "Lowercase: {lower}\nUppercase: {upper}\nTotal: {total}".format(
                 lower=lower, upper=upper, total=upper + lower
             )
-        except Exception as e:
-            print('There was an error while processing the recieved data.')
-            return "There was an error while processing the data.\n" + str(e)
+        except:
+            print("There was an error while processing the data")
+            return "There was an error while processing the file.\n \
+                Please check if the file is decodable using utf-8.\n"
 
     def start(self):
         self.__create_socket()
