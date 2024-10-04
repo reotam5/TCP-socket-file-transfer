@@ -45,7 +45,7 @@ class Server:
 
     @error_handler("Unnable to send response to client.", exit_on_error=False)
     def __send_message(self, connection, data):
-        return send_message(connection, data)
+        send_message(connection, data)
 
     @error_handler("Unnable to process request.", exit_on_error=False)
     def __count_alphabets(self, data):
@@ -74,6 +74,8 @@ class Server:
             self.__send_message(connection, count)
         except BrokenPipeError:
             print("Client is no longer available.")
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt")
         except Exception:
             print("There was an error in comminication with the client.")
         finally:
@@ -93,8 +95,11 @@ class Server:
                     connection, _ = self.__accept_connection()
                     print('Accepted a client connection')
                     executor.submit(self.__handle_clien, connection)
+                    print('hi')
 
 
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt")
         finally:
             print('Closing socket')
             self.socket.close()
