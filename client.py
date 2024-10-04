@@ -48,8 +48,6 @@ class Client:
             self.__send_file()
             response = self.__receive_data()
             print(response)
-        except KeyboardInterrupt:
-            print("Finishing due to KeyboardInterrupt")
         finally:
             self.socket.close()
 

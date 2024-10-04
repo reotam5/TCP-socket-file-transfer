@@ -1,17 +1,17 @@
 import argparse
-from os.path import isdir
 import socket
 import sys
 import ipaddress
 import os
+import threading
 
 SOCKET_ADDRESS_FAMILY = socket.AF_INET
 SOCKET_KIND = socket.SOCK_STREAM
-BUFFER_SIZE = 1024  # determines how much bytes to read at a time
+BUFFER_SIZE = 16  # determines how much bytes to read at a time
 HEADER_LENGTH = 4  # length of header in byte.
 HEADER_BYTE_ORDER = "big"  # determines how header is formatted. "big" or "little"
 DATA_ENCODING = "utf-8"  # determines the data encoding format.
-
+MAX_WORKERS = 2
 
 def validateIp(value):
     try:
@@ -46,7 +46,12 @@ def validatePort(value):
 def validateFilePath(value):
     file_path = str(value)
     if os.path.isfile(file_path):
-        return file_path
+        if os.path.getsize(file_path) > (2**(8 * HEADER_LENGTH)):
+            raise argparse.ArgumentTypeError(
+                "Received file is too large to send"
+            )
+        else:
+            return file_path
     elif os.path.isdir(file_path):
         raise argparse.ArgumentTypeError(
             "The path is a directory. Got '{value}'".format(value=value)
@@ -75,7 +80,7 @@ def receive_data_in_chunks(connection, bytes_to_receive):
 
 def receive_data(connection):
     header = receive_data_in_chunks(connection, HEADER_LENGTH)
-    payload_length = int.from_bytes(header, byteorder=HEADER_BYTE_ORDER)
+    payload_length =  int.from_bytes(header, byteorder=HEADER_BYTE_ORDER)
     payload = receive_data_in_chunks(connection, payload_length)
     return payload
 
@@ -111,3 +116,4 @@ def error_handler(error_message, exit_on_error=True):
         return wrapper
 
     return decorate
+

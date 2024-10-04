@@ -2,6 +2,7 @@ import argparse
 import socket
 from utils.utils import (
     DATA_ENCODING,
+    MAX_WORKERS,
     SOCKET_ADDRESS_FAMILY,
     SOCKET_KIND,
     error_handler,
@@ -10,7 +11,7 @@ from utils.utils import (
     validatePort,
 )
 import ipaddress
-
+import concurrent.futures
 
 class Server:
     def __init__(self, port):
@@ -27,8 +28,8 @@ class Server:
             str(ipaddress.ip_address(socket.INADDR_ANY)),
             self.port,
         )
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(address)
-        print("Bound to port {port}".format(port=self.port))
 
     @error_handler("Unnable to listen to socket.")
     def __listen_socket(self):
@@ -64,33 +65,38 @@ class Server:
             print("There was an error while processing the data")
             return "There was an error while processing the file.\nPlease check if the file is decodable using utf-8.\n"
 
+    def __handle_clien(self, connection):
+        try:
+            print('Receiving data...')
+            data = self.__receive_data(connection)
+            count = self.__count_alphabets(data)
+            print("Sending response...")
+            self.__send_message(connection, count)
+        except BrokenPipeError:
+            print("Client is no longer available.")
+        except Exception:
+            print("There was an error in comminication with the client.")
+        finally:
+            print("Closing connection with a client...")
+            connection.close()
+
     def start(self):
         self.__create_socket()
 
         try:
             self.__bind_socket()
             self.__listen_socket()
+            print('listening on port {port}'.format(port=self.port))
 
-            while True:
-                print("Waiting for connection request...")
-                connection, _ = self.__accept_connection()
+            with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+                while True:
+                    connection, _ = self.__accept_connection()
+                    print('Accepted a client connection')
+                    executor.submit(self.__handle_clien, connection)
 
-                try:
-                    print("Connection accepted. Receiving data...")
-                    data = self.__receive_data(connection)
-                    count = self.__count_alphabets(data)
 
-                    print("Sending response to the client...")
-                    self.__send_message(connection, count)
-                except Exception:
-                    print("There was an error in comminication with the client.")
-                finally:
-                    print("Closing connection with a client...\n")
-                    connection.close()
-        except KeyboardInterrupt:
-            print("Finishing due to KeyboardInterrupt")
         finally:
-            print("Closing socket...")
+            print('Closing socket')
             self.socket.close()
 
 
