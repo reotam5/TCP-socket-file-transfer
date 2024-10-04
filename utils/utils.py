@@ -3,7 +3,6 @@ import socket
 import sys
 import ipaddress
 import os
-import threading
 
 SOCKET_ADDRESS_FAMILY = socket.AF_INET
 SOCKET_KIND = socket.SOCK_STREAM
