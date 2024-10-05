@@ -95,7 +95,6 @@ class Server:
                     connection, _ = self.__accept_connection()
                     print('Accepted a client connection')
                     executor.submit(self.__handle_clien, connection)
-                    print('hi')
 
 
         except KeyboardInterrupt:
